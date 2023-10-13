@@ -15,24 +15,17 @@ while (true)
     {
         break;
     }
-    if (firstPlayerSign == secondPlayerSign)  
+    if (firstPlayerSign == secondPlayerSign)
     {
         Console.WriteLine("It is a draw");
     }
-    else if (firstPlayerSign == "rock" && secondPlayerSign == "scissors"  )
+    else if ((firstPlayerSign == "rock" && secondPlayerSign == "scissors")
+            || (firstPlayerSign == "scissors" && secondPlayerSign == "paper")
+            || (firstPlayerSign == "paper" && secondPlayerSign == "rock"))
     {
         Console.WriteLine("First player won");
     }
-    else if (firstPlayerSign == "scissors" && secondPlayerSign == "paper"  )
-    {
-        Console.WriteLine("First player won");
-    }
-    else if (firstPlayerSign == "paper" && secondPlayerSign == "rock"  )
-    {
-        Console.WriteLine("First player won");
-    }
-    
-    else 
+    else
     {
         Console.WriteLine("Second player won");
     }
