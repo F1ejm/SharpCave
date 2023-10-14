@@ -1,6 +1,6 @@
 ﻿Console.WriteLine("Let's play rock-paper-scissors!");
 
-string[] availableSigns = { "rock", "paper",  "scissors" };
+string[] availableSigns = { "rock", "paper",  "scissors",};
 
 while (true)
 {
