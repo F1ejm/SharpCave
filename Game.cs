@@ -55,12 +55,12 @@ class Game
 
         else
         {
-            DisplayWinningText("Second player", secondPlayerSign,firstPlayerSign);
+            DisplayWinningText("Second player", secondPlayerSign, firstPlayerSign);
             secondPlayerPoints = secondPlayerPoints + 1;
         }
         Console.WriteLine();
         Console.WriteLine($"First player points {firstPlayerPoints}");
-        Console.WriteLine($"First player points {secondPlayerPoints}");
+        Console.WriteLine($"Second player points {secondPlayerPoints}");
         Console.WriteLine();
 
         return true;
