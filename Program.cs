@@ -2,6 +2,9 @@
 using System.Runtime.ExceptionServices;
 
 Console.WriteLine("Let's play rock-paper-scissors!");
+Console.WriteLine("Do you chave anyone to play witch? (yes/no)");
+bool playingWithOtherHuman = (Console.ReadLine()?.ToLower().Trim() == "yes");
+Console.WriteLine(playingWithOtherHuman);
 
 string[] availableSigns = { "rock", "paper", "scissors", };
 const string EndGameComand = "quit";
@@ -32,19 +35,31 @@ while (keepPlayng)
             break;
         }
 
-        string? secondPlayerSign = null;
+        string? secondPlayerSign;
 
-        do
+        if (playingWithOtherHuman) 
         {
-            Console.WriteLine($"Provide sign, second player or write '{EndGameComand}' to end game:");
-            secondPlayerSign = Console.ReadLine()?.ToLower().Trim();
-        } while (!availableSigns.Contains(secondPlayerSign) && secondPlayerSign != EndGameComand);
+            do
+            {
+                Console.WriteLine($"Provide sign, second player or write '{EndGameComand}' to end game:");
+                secondPlayerSign = Console.ReadLine()?.ToLower().Trim();
+            } while (!availableSigns.Contains(secondPlayerSign) && secondPlayerSign != EndGameComand);
 
-        if (secondPlayerSign == EndGameComand)
+            if (secondPlayerSign == EndGameComand)
 
+            {
+                keepPlayng = false;
+                break;
+            }
+        }
+
+        else
         {
-            keepPlayng = false;
-            break;
+            Random rng = new Random();
+            int randomSignIndex = rng.Next(availableSigns.Length);
+            secondPlayerSign = availableSigns[randomSignIndex];
+
+            Console.WriteLine($"Second player provided {secondPlayerSign}");
         }
 
         int secondPlayerSignIndex = Array.IndexOf(availableSigns, secondPlayerSign);
