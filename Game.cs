@@ -1,32 +1,31 @@
 class Game
 {
-    string[] availableSigns = { "rock", "paper", "scissors", };
-    const string EndGameComand = "quit";
-    int firstPlayerPoints = 0;
-    int secondPlayerPoints = 0;
+    string[] availableSigns = { "rock", "paper", "scissors" };
+    const string EndGameCommand = "quit";
     int expectedRoundNumber = 3;
-    bool keepPlayng = true;
+    bool keepPlaying = true;
     bool playingWithOtherHuman;
+    Player firstPlayer = new Player("First player");
+    Player secondPlayer = new Player("Second player");
 
     public void Run()
     {
-        Console.WriteLine("Let's play rock-paper-scissors!");
+        Console.WriteLine("Let's play Rock-Paper-Scissors!");
 
-        Console.WriteLine("Do you chave anyone to play witch? (yes/no)");
+        Console.WriteLine("Do you have anyone to play with? (yes/no)");
         playingWithOtherHuman = (Console.ReadLine()?.ToLower().Trim() == "yes");
-        Console.WriteLine(playingWithOtherHuman);
 
-        while (keepPlayng)
+        while (keepPlaying)
         {
             PlayGame();
             DisplayGameSummary();
             ResetGameData();
         }
 
-        Console.WriteLine("Press ENTER to close the game");
+        Console.WriteLine("Press Enter to close the game...");
         Console.ReadLine();
-
     }
+
     private void PlayGame()
     {
         for (int roundNumber = 1; roundNumber <= expectedRoundNumber; roundNumber++)
@@ -38,52 +37,52 @@ class Game
             }
         }
     }
+
     private void DisplayGameSummary()
     {
-        if (firstPlayerPoints > secondPlayerPoints)
+        if (firstPlayer.Points > secondPlayer.Points)
         {
-            Console.WriteLine($"First player crushed second player   {firstPlayerPoints} to  {secondPlayerPoints}");
+            Console.WriteLine($"== {firstPlayer.Name} crushed {secondPlayer.Name.ToLower()} {firstPlayer.Points} to {secondPlayer.Points}!");
         }
-        else if (secondPlayerPoints > firstPlayerPoints)
+        else if (secondPlayer.Points > firstPlayer.Points)
         {
-            Console.WriteLine($"Second player cruched first player   {secondPlayerPoints} to {firstPlayerPoints}");
+            Console.WriteLine($"== {secondPlayer.Name} crushed {firstPlayer.Name.ToLower()} {secondPlayer.Points} to {firstPlayer.Points}!");
         }
-        else if (firstPlayerPoints == secondPlayerPoints)
+        else
         {
-            Console.WriteLine("It is total draw");
+            Console.WriteLine($"== It's a total draw {firstPlayer.Points} to {secondPlayer.Points}!");
         }
     }
+    
     private void ResetGameData()
     {
-        firstPlayerPoints = 0;
-        secondPlayerPoints = 0;
+        firstPlayer.Points = 0;
+        secondPlayer.Points = 0;
     }
+
     private bool PlayRound(int roundNumber)
     {
-        Console.WriteLine($"Round: {roundNumber}");
+        Console.WriteLine($"  Round {roundNumber}");
 
-        string? firstPlayerSign = GetPlayerSign("first");
+        string? firstPlayerSign = firstPlayer.GetSign(availableSigns, EndGameCommand);
 
-        if (firstPlayerSign == EndGameComand)
+        if (firstPlayerSign == EndGameCommand)
         {
-            keepPlayng = false;
+            keepPlaying = false;
             return false;
         }
 
         string? secondPlayerSign;
-
         if (playingWithOtherHuman)
         {
-            secondPlayerSign = GetPlayerSign("second");
+            secondPlayerSign = secondPlayer.GetSign(availableSigns, EndGameCommand);
 
-            if (secondPlayerSign == EndGameComand)
-
+            if (secondPlayerSign == EndGameCommand)
             {
-                keepPlayng = false;
+                keepPlaying = false;
                 return false;
             }
         }
-
         else
         {
             secondPlayerSign = GetComputerPlayerSign();
@@ -92,50 +91,23 @@ class Game
         string winningWithSecondPlayerSign = GetSignWinningWith(secondPlayerSign);
 
         if (firstPlayerSign == secondPlayerSign)
-
         {
-            Console.WriteLine("It is a draw");
+            Console.WriteLine("It's a draw!");
         }
-
         else if (firstPlayerSign == winningWithSecondPlayerSign)
         {
-            DisplayWinningText("First player", firstPlayerSign, secondPlayerSign);
-            firstPlayerPoints = firstPlayerPoints + 1;
+            DisplayWinningText(firstPlayer.Name, firstPlayerSign, secondPlayerSign);
+            firstPlayer.Points += 1;
         }
-
         else
         {
-            DisplayWinningText("Second player", secondPlayerSign, firstPlayerSign);
-            secondPlayerPoints = secondPlayerPoints + 1;
+            DisplayWinningText(secondPlayer.Name, secondPlayerSign, firstPlayerSign);
+            secondPlayer.Points += 1;
         }
-        Console.WriteLine();
-        Console.WriteLine($"First player points {firstPlayerPoints}");
-        Console.WriteLine($"Second player points {secondPlayerPoints}");
-        Console.WriteLine();
+
+        Console.WriteLine($"[Player1] {firstPlayer.Points} : {secondPlayer.Points} [Player2]");
 
         return true;
-    }
-    private string? GetPlayerSign(string playerName)
-    {
-        string? firstPlayerSign = null;
-        do
-        {
-            Console.WriteLine($"Provide sign, {playerName} player or write '{EndGameComand}' to end game:");
-            firstPlayerSign = Console.ReadLine()?.ToLower().Trim();
-        } while (!availableSigns.Contains(firstPlayerSign) && firstPlayerSign != EndGameComand);
-        return firstPlayerSign;
-    }
-
-    private static void DisplayWinningText(string playerName, string? WinningSign, string? losingSign)
-    {
-        Console.WriteLine($"{playerName} won! ( first player chose : {WinningSign} and second player chose : {losingSign})");
-    }
-     private string GetSignWinningWith(string? sign)
-    {
-        int SignIndex = Array.IndexOf(availableSigns, sign);
-        int winningSignIndex = (SignIndex + 1) % availableSigns.Length;
-        string winningWithProvidedSign = availableSigns[winningSignIndex];
-        return winningWithProvidedSign;
     }
 
     private string GetComputerPlayerSign()
@@ -144,8 +116,20 @@ class Game
         Random rng = new Random();
         int randomSignIndex = rng.Next(availableSigns.Length);
         secondPlayerSign = availableSigns[randomSignIndex];
-
-        Console.WriteLine($"Second player provided {secondPlayerSign}");
+        Console.WriteLine($"{secondPlayer.Name} provided {secondPlayerSign}");
         return secondPlayerSign;
+    }
+
+    private string GetSignWinningWith(string? sign)
+    {
+        int signIndex = Array.IndexOf(availableSigns, sign);
+        int winningSignIndex = (signIndex + 1) % availableSigns.Length;
+        string winningWithProvidedSign = availableSigns[winningSignIndex];
+        return winningWithProvidedSign;
+    }
+    
+    private static void DisplayWinningText(string playerName, string? winningSign, string? losingSign)
+    {
+        Console.WriteLine($"{playerName} won: {winningSign} beats {losingSign}!");
     }
 }
