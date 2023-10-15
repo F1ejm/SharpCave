@@ -5,8 +5,8 @@ class Game
     int expectedRoundNumber = 3;
     bool keepPlaying = true;
     bool playingWithOtherHuman;
-    Player firstPlayer = new Player("First player");
-    Player secondPlayer = new Player("Second player");
+    Player? firstPlayer;
+    Player? secondPlayer;
 
     public void Run()
     {
@@ -14,6 +14,12 @@ class Game
 
         Console.WriteLine("Do you have anyone to play with? (yes/no)");
         playingWithOtherHuman = (Console.ReadLine()?.ToLower().Trim() == "yes");
+
+        firstPlayer = new HumanPlayer("First player");
+
+        secondPlayer = playingWithOtherHuman 
+            ? new HumanPlayer("Second player") 
+            : new ComputerPlayer("Second player");
 
         while (keepPlaying)
         {
@@ -40,6 +46,11 @@ class Game
 
     private void DisplayGameSummary()
     {
+        if (firstPlayer == null || secondPlayer == null)
+        {
+            return;
+        }
+
         if (firstPlayer.Points > secondPlayer.Points)
         {
             Console.WriteLine($"== {firstPlayer.Name} crushed {secondPlayer.Name.ToLower()} {firstPlayer.Points} to {secondPlayer.Points}!");
@@ -56,12 +67,22 @@ class Game
     
     private void ResetGameData()
     {
+        if (firstPlayer == null || secondPlayer == null)
+        {
+            return;
+        }
+
         firstPlayer.Points = 0;
         secondPlayer.Points = 0;
     }
 
     private bool PlayRound(int roundNumber)
     {
+        if (firstPlayer == null || secondPlayer == null)
+        {
+            return false;
+        }
+        
         Console.WriteLine($"  Round {roundNumber}");
 
         string? firstPlayerSign = firstPlayer.GetSign(availableSigns, EndGameCommand);
@@ -73,19 +94,13 @@ class Game
         }
 
         string? secondPlayerSign;
-        if (playingWithOtherHuman)
-        {
-            secondPlayerSign = secondPlayer.GetSign(availableSigns, EndGameCommand);
 
-            if (secondPlayerSign == EndGameCommand)
-            {
-                keepPlaying = false;
-                return false;
-            }
-        }
-        else
+        secondPlayerSign = secondPlayer.GetSign(availableSigns, EndGameCommand);
+
+        if (secondPlayerSign == EndGameCommand)
         {
-            secondPlayerSign = GetComputerPlayerSign();
+            keepPlaying = false;
+            return false;
         }
 
         string winningWithSecondPlayerSign = GetSignWinningWith(secondPlayerSign);
@@ -110,16 +125,7 @@ class Game
         return true;
     }
 
-    private string GetComputerPlayerSign()
-    {
-        string? secondPlayerSign;
-        Random rng = new Random();
-        int randomSignIndex = rng.Next(availableSigns.Length);
-        secondPlayerSign = availableSigns[randomSignIndex];
-        Console.WriteLine($"{secondPlayer.Name} provided {secondPlayerSign}");
-        return secondPlayerSign;
-    }
-
+    
     private string GetSignWinningWith(string? sign)
     {
         int signIndex = Array.IndexOf(availableSigns, sign);
