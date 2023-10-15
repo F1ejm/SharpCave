@@ -8,7 +8,57 @@ class Game
     bool keepPlayng = true;
     bool playingWithOtherHuman;
 
-    bool PlayRound(int roundNumber)
+    public void Run()
+    {
+        Console.WriteLine("Let's play rock-paper-scissors!");
+
+        Console.WriteLine("Do you chave anyone to play witch? (yes/no)");
+        playingWithOtherHuman = (Console.ReadLine()?.ToLower().Trim() == "yes");
+        Console.WriteLine(playingWithOtherHuman);
+
+        while (keepPlayng)
+        {
+            PlayGame();
+            DisplayGameSummary();
+            ResetGameData();
+        }
+
+        Console.WriteLine("Press ENTER to close the game");
+        Console.ReadLine();
+
+    }
+    private void PlayGame()
+    {
+        for (int roundNumber = 1; roundNumber <= expectedRoundNumber; roundNumber++)
+        {
+            bool continueGame = PlayRound(roundNumber);
+            if (!continueGame)
+            {
+                break;
+            }
+        }
+    }
+    private void DisplayGameSummary()
+    {
+        if (firstPlayerPoints > secondPlayerPoints)
+        {
+            Console.WriteLine($"First player crushed second player   {firstPlayerPoints} to  {secondPlayerPoints}");
+        }
+        else if (secondPlayerPoints > firstPlayerPoints)
+        {
+            Console.WriteLine($"Second player cruched first player   {secondPlayerPoints} to {firstPlayerPoints}");
+        }
+        else if (firstPlayerPoints == secondPlayerPoints)
+        {
+            Console.WriteLine("It is total draw");
+        }
+    }
+    private void ResetGameData()
+    {
+        firstPlayerPoints = 0;
+        secondPlayerPoints = 0;
+    }
+    private bool PlayRound(int roundNumber)
     {
         Console.WriteLine($"Round: {roundNumber}");
 
@@ -65,12 +115,6 @@ class Game
 
         return true;
     }
-
-    private static void DisplayWinningText(string playerName, string? WinningSign, string? losingSign)
-    {
-        Console.WriteLine($"{playerName} won! ( first player chose : {WinningSign} and second player chose : {losingSign})");
-    }
-
     private string? GetPlayerSign(string playerName)
     {
         string? firstPlayerSign = null;
@@ -82,7 +126,11 @@ class Game
         return firstPlayerSign;
     }
 
-    private string GetSignWinningWith(string? sign)
+    private static void DisplayWinningText(string playerName, string? WinningSign, string? losingSign)
+    {
+        Console.WriteLine($"{playerName} won! ( first player chose : {WinningSign} and second player chose : {losingSign})");
+    }
+     private string GetSignWinningWith(string? sign)
     {
         int SignIndex = Array.IndexOf(availableSigns, sign);
         int winningSignIndex = (SignIndex + 1) % availableSigns.Length;
@@ -99,60 +147,5 @@ class Game
 
         Console.WriteLine($"Second player provided {secondPlayerSign}");
         return secondPlayerSign;
-    }
-
-    public void Run()
-    {
-        Console.WriteLine("Let's play rock-paper-scissors!");
-
-        Console.WriteLine("Do you chave anyone to play witch? (yes/no)");
-        playingWithOtherHuman = (Console.ReadLine()?.ToLower().Trim() == "yes");
-        Console.WriteLine(playingWithOtherHuman);
-
-        while (keepPlayng)
-        {
-            PlayGame();
-            DisplayGameSummary();
-
-            ResetGameData();
-        }
-
-        Console.WriteLine("Press ENTER to close the game");
-        Console.ReadLine();
-
-    }
-
-    private void ResetGameData()
-    {
-        firstPlayerPoints = 0;
-        secondPlayerPoints = 0;
-    }
-
-    private void PlayGame()
-    {
-        for (int roundNumber = 1; roundNumber <= expectedRoundNumber; roundNumber++)
-        {
-            bool continueGame = PlayRound(roundNumber);
-            if (!continueGame)
-            {
-                break;
-            }
-        }
-    }
-
-    private void DisplayGameSummary()
-    {
-        if (firstPlayerPoints > secondPlayerPoints)
-        {
-            Console.WriteLine($"First player crushed second player   {firstPlayerPoints} to  {secondPlayerPoints}");
-        }
-        else if (secondPlayerPoints > firstPlayerPoints)
-        {
-            Console.WriteLine($"Second player cruched first player   {secondPlayerPoints} to {firstPlayerPoints}");
-        }
-        else if (firstPlayerPoints == secondPlayerPoints)
-        {
-            Console.WriteLine("It is total draw");
-        }
     }
 }
